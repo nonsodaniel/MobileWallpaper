@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {
   StyleSheet, Text, View,
   ActivityIndicator, FlatList, Dimensions, Image,
-  Animated, TouchableWithoutFeedback, TouchableOpacity
+  Animated, TouchableWithoutFeedback, TouchableOpacity, CameraRoll, Share
 } from 'react-native'
 // import Icon from 'react-native-vector-icons/Ionicons'
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -23,12 +23,17 @@ class App extends Component {
   actionBarY = this.state.scale.interpolate({
     inputRange: [0.9, 1],
     outputRange: [0, -80]
+  });
+  borderRadius = this.state.scale.interpolate({
+    inputRange: [0.9, 1],
+    outputRange: [30, 0]
   })
   componentDidMount() {
     this.loadWallpapers()
   }
 
   loadWallpapers = async () => {
+    this.setState({ isLoading: true })
     let { URL } = this.state
     Axios.get(URL)
       .then(res => {
@@ -51,6 +56,18 @@ class App extends Component {
       }
     })
   }
+  saveToCameraRoll = (item) => {
+
+  }
+  shareWallPaper = async (image) => {
+    try {
+      await Share.share({
+        message: `Checkout this wallpaper ${image.urls.full}`
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   renderItem = ({ item }) => {
     console.log("image", item.urls.regular, height, width)
@@ -65,8 +82,8 @@ class App extends Component {
 
         <TouchableWithoutFeedback onPress={() => this.showControls(item)}>
           <Animated.View style={[{ height, width }, this.scale]}>
-            <Image
-              style={{ flex: 1, height: null, width: null }}
+            <Animated.Image
+              style={{ flex: 1, height: null, width: null, borderRadius: this.borderRadius }}
               source={{ uri: item.urls.regular }}
             />
           </Animated.View>
@@ -80,12 +97,12 @@ class App extends Component {
           }}
         >
           <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-            <TouchableOpacity activeOpacity={0.5} onPress={() => alert("load images")}>
+            <TouchableOpacity activeOpacity={0.5} onPress={() => this.loadWallpapers()}>
               <Icon name="refresh" size={30} color="white" />
             </TouchableOpacity>
           </View>
           <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-            <TouchableOpacity activeOpacity={0.5} onPress={() => alert("load images")}>
+            <TouchableOpacity activeOpacity={0.5} onPress={() => this.shareWallPaper(item)}>
               <Icon name="share" size={30} color="white" />
             </TouchableOpacity>
           </View>
