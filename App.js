@@ -13,7 +13,7 @@ const { height, width } = Dimensions.get('window')
 class App extends Component {
   state = {
     isLoading: true, images: [],
-    URL: "https://api.unsplash.com/photos/?client_id=Od0sXvqphCVnmXukVaHww8eDgNP-q3mAtyhB-bbUAZ8",
+    URL: "https://api.unsplash.com/photos/random?count=30&client_id=Od0sXvqphCVnmXukVaHww8eDgNP-q3mAtyhB-bbUAZ8",
     scale: new Animated.Value(1),
     isImageFocused: false
   }
